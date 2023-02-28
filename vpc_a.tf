@@ -69,6 +69,18 @@ repo_upgrade: none
 packages:
   - tmux
   - openswan
+write_files:
+  - path: /etc/sysctl.conf
+    content: |
+      net.ipv4.ip_forward = 1
+      net.ipv4.conf.default.rp_filter = 0
+      net.ipv4.conf.default.accept_source_route = 0
+  - path: /etc/ipsec.d/aws.conf
+    content:
+  - path: /etc/ipsec.d/aws.secrets
+    content:
+run_commands:
+  - sysctl -p
 EOF
 
 
@@ -101,17 +113,9 @@ output "configuration" {
   sensitive = true
   value     = <<EOF
 
->>>
-yum install -y openswan
+ssh -o StrictHostKeyChecking=no -i id_rsa -o UserKnownHostsFile=/dev/null ec2-user@${aws_instance.testvpc_a.public_ip}
 
-/etc/sysctl.conf:
-net.ipv4.ip_forward = 1
-net.ipv4.conf.default.rp_filter = 0
-net.ipv4.conf.default.accept_source_route = 0
-
-sysctl -p
-
-/etc/ipsec.d/aws.conf:
+cat <<END >/etc/ipsec.d/aws.conf
 conn Tunnel1
     authby=secret
     auto=start
@@ -130,11 +134,15 @@ conn Tunnel1
     dpddelay=10
     dpdtimeout=30
     dpdaction=restart_by_peer
+END
 
-/etc/ipsec.d/aws.secrets:
+cat <<END >/etc/ipsec.d/aws.secrets
 ${aws_instance.testvpc_a.public_ip} ${aws_vpn_connection.testvpn.tunnel1_address}: PSK "${aws_vpn_connection.testvpn.tunnel1_preshared_key}"
+END
 
 systemctl start ipsec
+
+ping ${aws_instance.testvpc_b.private_ip}
 >>>
 EOF
 }
