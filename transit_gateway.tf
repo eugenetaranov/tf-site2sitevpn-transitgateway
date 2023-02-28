@@ -1,5 +1,5 @@
 module "tgw_main" {
-  source      = "github.com/terraform-aws-modules/terraform-aws-transit-gateway.git?ref=v1.3.0"
+  source      = "github.com/terraform-aws-modules/terraform-aws-transit-gateway.git?ref=v2.9.0"
   name        = "test-tgw"
   description = "test tgw"
   share_tgw   = false

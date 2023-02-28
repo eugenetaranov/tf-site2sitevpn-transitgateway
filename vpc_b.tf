@@ -1,6 +1,6 @@
 module "testvpc_b" {
   name                 = "testvpc-b"
-  source               = "github.com/terraform-aws-modules/terraform-aws-vpc?ref=v2.33.0"
+  source               = "github.com/terraform-aws-modules/terraform-aws-vpc?ref=v3.19.0"
   cidr                 = var.testvpc_b_cidr
   azs                  = [for az in var.az : format("%s%s", var.region, az)]
   public_subnets       = [cidrsubnet(var.testvpc_b_cidr, 9, 0), cidrsubnet(var.testvpc_b_cidr, 9, 1), cidrsubnet(var.testvpc_b_cidr, 9, 2)]
