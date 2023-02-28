@@ -10,9 +10,10 @@ resource "aws_customer_gateway" "testvpn" {
 
 resource "aws_vpn_connection" "testvpn" {
   customer_gateway_id = aws_customer_gateway.testvpn.id
-  transit_gateway_id  = module.tgw_main.this_ec2_transit_gateway_id
+  transit_gateway_id  = module.tgw_main.ec2_transit_gateway_id
   type                = "ipsec.1"
   static_routes_only  = true
+
   tags = {
     Name = "testvpn"
   }

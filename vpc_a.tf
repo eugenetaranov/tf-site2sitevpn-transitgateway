@@ -98,7 +98,8 @@ output "instance_testvpc_a_id" {
 }
 
 output "configuration" {
-  value = <<EOF
+  sensitive = true
+  value     = <<EOF
 
 >>>
 yum install -y openswan

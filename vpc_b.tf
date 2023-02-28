@@ -75,12 +75,12 @@ EOF
 }
 
 resource "aws_iam_instance_profile" "test" {
-  name = "test"
-  role = aws_iam_role.test.id
+  name_prefix = "test-"
+  role        = aws_iam_role.test.id
 }
 
 resource "aws_iam_role" "test" {
-  name               = "test"
+  name_prefix        = "test-"
   assume_role_policy = <<EOF
 {
     "Version": "2012-10-17",
