@@ -1,12 +1,8 @@
 # tf-site2sitevpn-transitgateway
-Configures a lab with test ec2 instance in vpc_a connecting via site2site vpn and transit gateway to the ec2 instance in vpc_b. 
+Configures a test environment with test ec2 instance in vpc_a connecting via site2site vpn and transit gateway or vpn gateway to the ec2 instance in vpc_b. 
 
-## Procedure
-
-1. Generate ssh key
-```shell
-ssh-keygen -t rsa
-```
+## Procedure for transit gateway
+1. `cd transit_gateway`
 
 2. Apply terraform (might be required to comment out some vpn resources before vpc are created)
 

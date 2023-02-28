@@ -1,5 +1,5 @@
 module "testvpc_a" {
-  name                 = "testvpc-a"
+  name                 = "transitgateway-testvpc-a"
   source               = "github.com/terraform-aws-modules/terraform-aws-vpc?ref=v3.19.0"
   cidr                 = var.testvpc_a_cidr
   azs                  = [for az in var.az : format("%s%s", var.region, az)]
@@ -12,7 +12,7 @@ module "testvpc_a" {
 
 // ec2
 resource "aws_security_group" "testvpc_a" {
-  name_prefix = "testvpc-a"
+  name_prefix = "transitgateway-testvpc-a"
   vpc_id      = module.testvpc_a.vpc_id
 }
 
@@ -61,7 +61,7 @@ resource "aws_instance" "testvpc_a" {
   source_dest_check           = false
   subnet_id                   = module.testvpc_a.public_subnets[0]
   vpc_security_group_ids      = [aws_security_group.testvpc_a.id]
-  key_name                    = aws_key_pair.key.id
+  key_name                    = aws_key_pair.main.id
   associate_public_ip_address = true
   user_data                   = <<EOF
 #cloud-config
@@ -89,7 +89,7 @@ EOF
   }
 
   tags = {
-    Name = "testvpc-a"
+    Name = "transitgateway-testvpc-a"
   }
 
   lifecycle {
@@ -107,42 +107,4 @@ output "instance_testvpc_a_private_ip" {
 
 output "instance_testvpc_a_id" {
   value = aws_instance.testvpc_a.id
-}
-
-output "configuration" {
-  sensitive = true
-  value     = <<EOF
-
-ssh -o StrictHostKeyChecking=no -i id_rsa -o UserKnownHostsFile=/dev/null ec2-user@${aws_instance.testvpc_a.public_ip}
-
-cat <<END >/etc/ipsec.d/aws.conf
-conn Tunnel1
-    authby=secret
-    auto=start
-    left=%defaultroute
-    leftid=${aws_instance.testvpc_a.public_ip}
-    right=${aws_vpn_connection.testvpn.tunnel1_address}
-    type=tunnel
-    ikelifetime=8h
-    keylife=1h
-    phase2alg=aes128-sha1;modp1024
-    ike=aes128-sha1;modp1024
-    keyingtries=%forever
-    keyexchange=ike
-    leftsubnet=${var.testvpc_a_cidr}
-    rightsubnet=${var.testvpc_b_cidr}
-    dpddelay=10
-    dpdtimeout=30
-    dpdaction=restart_by_peer
-END
-
-cat <<END >/etc/ipsec.d/aws.secrets
-${aws_instance.testvpc_a.public_ip} ${aws_vpn_connection.testvpn.tunnel1_address}: PSK "${aws_vpn_connection.testvpn.tunnel1_preshared_key}"
-END
-
-systemctl start ipsec
-
-ping ${aws_instance.testvpc_b.private_ip}
->>>
-EOF
 }

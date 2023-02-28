@@ -1,5 +1,5 @@
 module "testvpc_b" {
-  name                 = "testvpc-b"
+  name                 = "transitgateway-testvpc-b"
   source               = "github.com/terraform-aws-modules/terraform-aws-vpc?ref=v3.19.0"
   cidr                 = var.testvpc_b_cidr
   azs                  = [for az in var.az : format("%s%s", var.region, az)]
@@ -12,7 +12,7 @@ module "testvpc_b" {
 
 // ec2
 resource "aws_security_group" "testvpc_b" {
-  name_prefix = "testvpc-b"
+  name_prefix = "transitgateway-testvpc-b"
   vpc_id      = module.testvpc_b.vpc_id
 }
 
@@ -49,7 +49,7 @@ resource "aws_instance" "testvpc_b" {
   source_dest_check           = false
   subnet_id                   = module.testvpc_b.private_subnets[0]
   vpc_security_group_ids      = [aws_security_group.testvpc_b.id]
-  key_name                    = aws_key_pair.key.id
+  key_name                    = aws_key_pair.main.id
   associate_public_ip_address = false
   iam_instance_profile        = aws_iam_instance_profile.test.id
   user_data                   = <<EOF
@@ -66,7 +66,7 @@ EOF
   }
 
   tags = {
-    Name = "testvpc-b"
+    Name = "transitgateway-testvpc-b"
   }
 
   lifecycle {
@@ -75,12 +75,12 @@ EOF
 }
 
 resource "aws_iam_instance_profile" "test" {
-  name_prefix = "test-"
+  name_prefix = "transitgateway-test-"
   role        = aws_iam_role.test.id
 }
 
 resource "aws_iam_role" "test" {
-  name_prefix        = "test-"
+  name_prefix        = "transitgateway-test-"
   assume_role_policy = <<EOF
 {
     "Version": "2012-10-17",
