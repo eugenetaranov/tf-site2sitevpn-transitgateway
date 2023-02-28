@@ -1,7 +1,7 @@
 module "tgw_main" {
   source      = "github.com/terraform-aws-modules/terraform-aws-transit-gateway.git?ref=v2.9.0"
-  name        = "transitgateway-test"
-  description = "transitgateway-test"
+  name        = "tgw-test"
+  description = "tgw-test"
   share_tgw   = false
   vpc_attachments = {
     vpc_b = {
@@ -14,7 +14,7 @@ module "tgw_main" {
   }
 
   tags = {
-    Name = "transitgateway-test"
+    Name = "tgw-test"
   }
 }
 

@@ -1,5 +1,5 @@
 module "testvpc_a" {
-  name                 = "transitgateway-testvpc-a"
+  name                 = "tgw-testvpc-a"
   source               = "github.com/terraform-aws-modules/terraform-aws-vpc?ref=v3.19.0"
   cidr                 = var.testvpc_a_cidr
   azs                  = [for az in var.az : format("%s%s", var.region, az)]
@@ -12,7 +12,7 @@ module "testvpc_a" {
 
 // ec2
 resource "aws_security_group" "testvpc_a" {
-  name_prefix = "transitgateway-testvpc-a"
+  name_prefix = "tgw-testvpc-a"
   vpc_id      = module.testvpc_a.vpc_id
 }
 
@@ -89,7 +89,7 @@ EOF
   }
 
   tags = {
-    Name = "transitgateway-testvpc-a"
+    Name = "tgw-testvpc-a"
   }
 
   lifecycle {

@@ -4,7 +4,7 @@ resource "aws_customer_gateway" "main" {
   type       = "ipsec.1"
 
   tags = {
-    Name = "transitgateway-test"
+    Name = "tgw-test"
   }
 }
 
@@ -15,7 +15,7 @@ resource "aws_vpn_connection" "testvpn" {
   static_routes_only  = true
 
   tags = {
-    Name = "transitgateway-test"
+    Name = "tgw-test"
   }
 }
 
